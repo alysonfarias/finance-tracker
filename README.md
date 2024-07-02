@@ -1,5 +1,8 @@
 # Nuxt 3 Minimal Starter
 
+Icons:
+Use the name prop by following this pattern: i-{collection_name}-{icon_name}. You can search any icon from Iconify using https://icones.js.org.
+
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Setup
