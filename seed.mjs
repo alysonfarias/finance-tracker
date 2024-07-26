@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { faker } from '@faker-js/faker'
 import 'dotenv/config'
-import { categoriesOptions } from '~/constants'
+import { categoriesOptions } from './app/constants.js'
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -23,8 +23,10 @@ async function seedTransactions() {
 
     let transactions = []
 
+    let transactionsQuantity = 10
+
     for (let year = new Date().getFullYear(); year > new Date().getFullYear() - 2; year--) {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < transactionsQuantity; i++) {
             const date = new Date(
                 year,
                 faker.number.int({ min: 0, max: 11 }),
