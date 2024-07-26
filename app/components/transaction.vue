@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-2 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100">
-    <div class="flex items-center justify-between">
+  <div class="grid grid-cols-3 py-4 border-b border-gray-200 dark:border-gray-800 text-gray-900 dark:text-gray-100">
+    <div class="flex items-center justify-between space-x-4 col-span-2">
       <div class="flex items-center space-x-1">
         <UIcon :name="icon" :class="[iconColor]" />
         <div>{{ transaction.description }}</div>
@@ -30,9 +30,9 @@ const supabase = useSupabaseClient()
 
 const emit = defineEmits(['deleted'])
 
-const isIncome = computed (() => props.transaction.type === 'Income')
-const icon = computed (() => isIncome.value ? 'i-heroicons-arrow-up-right' : 'i-heroicons-arrow-down-right')
-const iconColor = computed (() => isIncome.value ? 'text-green-600' : 'text-red-600')
+const isIncome = computed(() => props.transaction.type === 'Income')
+const icon = computed(() => isIncome.value ? 'i-heroicons-arrow-up-right' : 'i-heroicons-arrow-down-right')
+const iconColor = computed(() => isIncome.value ? 'text-green-600' : 'text-red-600')
 
 const deleteTransaction = async () => {
   isLoading.value = true
