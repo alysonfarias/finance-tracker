@@ -40,4 +40,6 @@ export const useSelectedTimePeriod = (period) => {
             }
         }
     )
+
+    return dates
 }
