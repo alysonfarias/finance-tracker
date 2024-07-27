@@ -29,6 +29,8 @@
 </template>
 
 <script>
+useRedirectIfAuthenticated()
+
 const success = ref(false)
 
 const email = ref('')
