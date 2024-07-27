@@ -25,7 +25,7 @@
 <script setup>
 
 const isLoading = ref(false)
-const toast = useToast()
+const { toastError, toastSuccess } = useAppToast()
 const supabase = useSupabaseClient()
 
 const emit = defineEmits(['deleted'])
@@ -39,13 +39,13 @@ const deleteTransaction = async () => {
 
   try {
     await supabase.from('transactions').delete().eq('id', props.transaction.id)
-    toast.add({
+    toastSuccess({
       title: "Transaction deleted",
       icon: 'i-heroicons-check-circle'
     })
     emit('deleted', props.transaction.id);
   } catch (error) {
-    toast.add({
+    toastError({
       title: 'Transaction deleted',
       icon: 'i-heroicons-exclamation-circle'
     })
