@@ -4,7 +4,7 @@
             Finance Tracker
         </NuxtLink>
         <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' }, width: 'w-64' }" v-if="user">
-            <UAvatar src="https://avatars.githubusercontent.com/u/63425960?v=4" alt="Avatar" />
+            <UAvatar :src="url" alt="User Profile Avatar" />
 
             <template #account="{ item }">
                 <div class="text-left">
@@ -29,6 +29,7 @@
 <script setup>
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();
+const { url } = useAvatarUrl()
 const items = [
     [{
         slot: 'account',
