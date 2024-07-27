@@ -8,7 +8,7 @@ export const useSelectedTimePeriod = (period) => {
                     return {
                         current: {
                             from: startOfYear(new Date()),
-                            to: new Date()
+                            to: endOfYear(new Date())
                         },
                         previous: {
                             from: startOfYear(sub(new Date(), { years: 1 })),
@@ -21,7 +21,7 @@ export const useSelectedTimePeriod = (period) => {
                     return {
                         current: {
                             from: startOfMonth(new Date()),
-                            to: new Date()
+                            to: endOfYear(new Date())
                         },
                         previous: {
                             from: startOfMonth(sub(new Date(), { months: 1 })),
@@ -34,7 +34,7 @@ export const useSelectedTimePeriod = (period) => {
                     return {
                         current: {
                             from: startOfDay(new Date()),
-                            to: new Date()
+                            to: endOfYear(new Date())
                         },
                         previous: {
                             from: startOfMonth(sub(new Date(), { months: 1 })),

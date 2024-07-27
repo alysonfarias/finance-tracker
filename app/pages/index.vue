@@ -44,10 +44,10 @@
 
 <script setup>
 const isOpen = ref(false)
-const { current, previous } = useSelectedTimePeriod(selectedView)
 
 const selectedView = ref(transactionViewOptions[1]);
 
+const { current, previous } = useSelectedTimePeriod(selectedView)
 
 import { transactionViewOptions } from '~/constants'
 
@@ -61,16 +61,10 @@ const { pending, refresh, transactions: {
         byDate
     }
 } } = useFetchTransactions(current)
-
-// const sortedKeys = Object.keys(grouped).sort().reverse()
-// const sortedGrouped = {}
-// for (const key of sortedKeys) {
-//   sortedGrouped[key] = grouped[key]
-// }
-// return sortedGrouped
-
-const { transactions: {
+const { refresh: refreshPrevious, transactions: {
     incomeTotal: prevIncomeTotal,
     expenseTotal: prevExpenseTotal,
 } } = useFetchTransactions(previous)
+
+await Promise.all([refresh(), refreshPrevious()])
 </script>
