@@ -16,6 +16,7 @@
       <div>
         <UDropdown :items="items" :popper="{ placement: 'bottom-start' }">
           <UButton color="white" variant="ghost" trailing-icon="i-heroicons-ellipsis-horizontal" :loading="isLoading" />
+          <TransactionModal v-model="isOpen" :transaction="transaction" @saved="emit('edited')" />
         </UDropdown>
       </div>
     </div>
@@ -28,7 +29,9 @@ const isLoading = ref(false)
 const { toastError, toastSuccess } = useAppToast()
 const supabase = useSupabaseClient()
 
-const emit = defineEmits(['deleted'])
+const emit = defineEmits(['deleted', 'edited'])
+
+const isOpen = ref(false)
 
 const isIncome = computed(() => props.transaction.type === 'Income')
 const icon = computed(() => isIncome.value ? 'i-heroicons-arrow-up-right' : 'i-heroicons-arrow-down-right')
@@ -47,7 +50,7 @@ const deleteTransaction = async () => {
   } catch (error) {
     toastError({
       title: 'Transaction deleted',
-      icon: 'i-heroicons-exclamation-circle'
+      icon: error
     })
   } finally {
     isLoading.value = false
@@ -64,7 +67,7 @@ const items = [
     {
       label: 'Edit',
       icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => console.log('Edit')
+      click: () => isOpen.value = true
     },
     {
       label: 'Delete',
