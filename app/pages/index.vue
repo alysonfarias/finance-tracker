@@ -7,6 +7,7 @@
             <USelectMenu :options="transactionViewOptions" v-model="selectedView" />
         </div>
     </section>
+
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 sm:gap-16 mb-10">
         <Trend color="green" title="Income" :amount="incomeTotal" :last-amount="prevIncomeTotal" :loading="pending" />
         <Trend color="red" title="Expense" :amount="expenseTotal" :last-amount="prevExpenseTotal" :loading="pending" />
@@ -16,10 +17,7 @@
 
     <section class="flex justify-between mb-10">
         <div>
-            <h2 class="text-2xl font-extrabold">
-                Transactions
-            </h2>
-
+            <h2 class="text-2xl font-extrabold">Transactions</h2>
             <div class="text-gray-500 dark:text-gray-400">
                 You have {{ incomeCount }} incomes and {{ expenseCount }} expenses this period
             </div>
@@ -43,16 +41,12 @@
 </template>
 
 <script setup>
-const isOpen = ref(false)
-import { transactionViewOptions } from '~/constants';
+import { transactionViewOptions } from '~/constants'
 
 const user = useSupabaseUser()
-
-const selectedView = ref(user.value.user_metadata?.transaction_view ?? transactionViewOptions[1]);
-
+const selectedView = ref(user.value.user_metadata?.transaction_view ?? transactionViewOptions[1])
+const isOpen = ref(false)
 const { current, previous } = useSelectedTimePeriod(selectedView)
-
-
 
 const { pending, refresh, transactions: {
     incomeCount,

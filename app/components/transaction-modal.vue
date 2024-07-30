@@ -1,13 +1,13 @@
 <template>
     <UModal v-model="isOpen">
         <UCard>
+            <template #header>
+                {{ isEditing ? 'Edit' : 'Add' }} Transaction
+            </template>
+
             <UForm :state="state" :schema="schema" ref="form" @submit="save">
-                <template #header>
-                    {{ isEditing ? 'Edit' : 'Add' }} transaction
-                </template>
-                <UFormGroup label="Transaction Type" :required="true" name="Category" class="mb-4">
-                    <!-- <USelect :options="transactionsType" placeholder="Select Transaction Type" v-model="state.type" /> -->
-                    <USelect :disabled="isEditing" :options="transactionsType" placeholder="Select Transaction Type"
+                <UFormGroup :required="true" label="Transaction Type" name="type" class="mb-4">
+                    <USelect :disabled="isEditing" placeholder="Select the transaction type" :options="types"
                         v-model="state.type" />
                 </UFormGroup>
 
@@ -15,7 +15,7 @@
                     <UInput type="number" placeholder="Amount" v-model.number="state.amount" />
                 </UFormGroup>
 
-                <UFormGroup label="Transaction Date" :required="true" name="created_at" class="mb-4">
+                <UFormGroup label="Transaction date" :required="true" name="created_at" class="mb-4">
                     <UInput type="date" icon="i-heroicons-calendar-days-20-solid" v-model="state.created_at" />
                 </UFormGroup>
 
@@ -23,37 +23,30 @@
                     <UInput placeholder="Description" v-model="state.description" />
                 </UFormGroup>
 
-                <UFormGroup label="Category" :required="true" name="Category" class="mb-4"
+                <UFormGroup :required="true" label="Category" name="category" class="mb-4"
                     v-if="state.type === 'Expense'">
-                    <USelect :options="categoriesOptions" placeholder="Description" v-model="state.category" />
+                    <USelect placeholder="Category" :options="categories" v-model="state.category" />
                 </UFormGroup>
 
-                <div class="flex justify-end">
-                    <UButton class="px-5" type="submit" color="black" variant="solid" label="Save"
-                        :loading="isLoading" />
-                </div>
+                <UButton type="submit" color="black" variant="solid" label="Save" :loading="isLoading" />
             </UForm>
-
         </UCard>
     </UModal>
 </template>
 
 <script setup>
-import { categoriesOptions, transactionsType } from '~/constants'
+import { categories, types } from '~/constants'
 import { z } from 'zod'
+
 const props = defineProps({
     modelValue: Boolean,
     transaction: {
         type: Object,
-        required: false,
+        required: false
     }
 })
 const isEditing = computed(() => !!props.transaction)
-
 const emit = defineEmits(['update:modelValue', 'saved'])
-
-
-
 
 const defaultSchema = z.object({
     created_at: z.string(),
@@ -62,18 +55,15 @@ const defaultSchema = z.object({
 })
 
 const incomeSchema = z.object({
-    type: z.literal("Income")
+    type: z.literal('Income')
 })
-
 const expenseSchema = z.object({
-    type: z.literal("Expense"),
-    category: z.enum(categoriesOptions)
+    type: z.literal('Expense'),
+    category: z.enum(categories)
 })
-
 const investmentSchema = z.object({
-    type: z.literal("Investment")
+    type: z.literal('Investment')
 })
-
 const savingSchema = z.object({
     type: z.literal('Saving')
 })
@@ -85,11 +75,12 @@ const schema = z.intersection(
 
 const form = ref()
 const isLoading = ref(false)
-const supabase = useSupabaseClient();
-const { toastSuccess, toastError } = useAppToast()
-
+const supabase = useSupabaseClient()
+const { toastError, toastSuccess } = useAppToast()
 
 const save = async () => {
+    if (form.value.errors.length) return
+
     isLoading.value = true
     try {
         const { error } = await supabase.from('transactions')
@@ -100,24 +91,42 @@ const save = async () => {
 
         if (!error) {
             toastSuccess({
-                'title': 'Transaction saved',
-                'icon': 'i-heroicons-check-circle'
+                'title': 'Transaction saved'
             })
             isOpen.value = false
             emit('saved')
-            return;
+            return
         }
+
         throw error
-    } catch (error) {
+    } catch (e) {
         toastError({
             title: 'Transaction not saved',
             description: e.message,
-            icon: 'i-heroicons-exclamation-circle',
-            color: 'red'
         })
     } finally {
         isLoading.value = false
     }
+}
+
+const initialState = isEditing.value ? {
+    type: props.transaction.type,
+    amount: props.transaction.amount,
+    created_at: props.transaction.created_at.split('T')[0],
+    description: props.transaction.description,
+    category: props.transaction.category
+} : {
+    type: undefined,
+    amount: 0,
+    created_at: undefined,
+    description: undefined,
+    category: undefined
+}
+const state = ref({ ...initialState })
+
+const resetForm = () => {
+    Object.assign(state.value, initialState)
+    form.value.clear()
 }
 
 const isOpen = computed({
@@ -127,25 +136,4 @@ const isOpen = computed({
         emit('update:modelValue', value)
     }
 })
-
-const initialState = {
-    type: undefined,
-    amount: 0,
-    created_at: undefined,
-    description: undefined,
-    category: undefined
-}
-
-const state = ref(isEditing.value ? {
-    type: props.transaction.type,
-    amount: props.transaction.amount,
-    created_at: props.transaction.created_at.split('T')[0],
-    description: props.transaction.description,
-    category: props.transaction.category
-} : { ...initialState })
-
-const resetForm = () => {
-    Object.assign(state.value, initialState)
-    form.value.clear()
-}
 </script>

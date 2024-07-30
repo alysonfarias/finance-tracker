@@ -1,5 +1,5 @@
 <template>
-    <UForm :state="state" :schema="schema" @submit="saveProfile">
+    <UForm :state="state" :schema="schema" @submit.prevent="saveProfile">
         <UFormGroup class="mb-4" label="Full Name" name="name">
             <UInput v-model="state.name" />
         </UFormGroup>
@@ -16,7 +16,7 @@
 <script setup>
 import { z } from 'zod'
 
-const supabase = useSupabaseClient();
+const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 
 const { toastSuccess, toastError } = useAppToast()
@@ -34,6 +34,7 @@ const schema = z.object({
 
 const saveProfile = async () => {
     pending.value = true
+
     try {
         const data = {
             data: {
@@ -46,17 +47,18 @@ const saveProfile = async () => {
         }
 
         console.log(data)
-        const { error } = await supabase.auth.updateUser(data)
 
+        const { error } = await supabase.auth.updateUser(data)
         if (error) throw error
+
         toastSuccess({
             title: 'Profile updated',
-            description: 'Your profile has been updated',
+            description: 'Your profile has been updated'
         })
     } catch (error) {
         toastError({
-            title: 'Profile updated',
-            description: 'Your profile has been updated',
+            title: 'Error updating profile',
+            description: error.message
         })
     } finally {
         pending.value = false

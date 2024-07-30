@@ -6,7 +6,6 @@ export const useFetchTransactions = (period) => {
     const income = computed(
         () => transactions.value.filter(t => t.type === 'Income')
     )
-
     const expense = computed(
         () => transactions.value.filter(t => t.type === 'Expense')
     )
@@ -17,9 +16,8 @@ export const useFetchTransactions = (period) => {
     const incomeTotal = computed(
         () => income.value.reduce((sum, transaction) => sum + transaction.amount, 0)
     )
-
     const expenseTotal = computed(
-        () => income.value.reduce((sum, transaction) => sum + transaction.amount, 0)
+        () => expense.value.reduce((sum, transaction) => sum + transaction.amount, 0)
     )
 
     const fetchTransactions = async () => {
